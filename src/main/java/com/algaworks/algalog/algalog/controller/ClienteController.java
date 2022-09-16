@@ -2,11 +2,14 @@ package com.algaworks.algalog.algalog.controller;
 
 import com.algaworks.algalog.algalog.model.Cliente;
 import com.algaworks.algalog.algalog.repository.ClienteRepository;
+import com.algaworks.algalog.algalog.services.ClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 
@@ -15,6 +18,7 @@ import java.util.*;
 public class ClienteController {
 
     private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
     @GetMapping("/clientes")
     public ResponseEntity<List<Cliente>> listar(){
@@ -58,19 +62,20 @@ public class ClienteController {
 
     @PostMapping("/clientes")
     @ResponseStatus(HttpStatus.CREATED)
-    public  Cliente adicionar(@RequestBody Cliente cliente){
-        return clienteRepository.save(cliente);
+    public  Cliente adicionar(@Valid @RequestBody Cliente cliente){
+        return clienteService.salvar(cliente);
+
     }
 
-
     @PutMapping("clientes/{clienteId}")
-    public ResponseEntity<Cliente> atualizar(@PathVariable Long clienteId, @RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> atualizar(@PathVariable Long clienteId, @Valid @RequestBody Cliente cliente) {
 
         if (!clienteRepository.existsById((clienteId))) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cliente);
         }
         cliente.setId(clienteId);
-        cliente = clienteRepository.save(cliente);
+        cliente = clienteService.salvar(cliente);
+
         return ResponseEntity.status(HttpStatus.OK).body(cliente);
     }
 
@@ -80,8 +85,7 @@ public class ClienteController {
         if(!clienteRepository.existsById(id)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
-        clienteRepository.deleteById(id);
+        clienteService.excluir(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
