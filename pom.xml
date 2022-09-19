@@ -17,7 +17,7 @@
 		<java.version>18</java.version>
 		<flyway.url>jdbc:mysql://localhost:3306</flyway.url>
 		<flyway.user>root</flyway.user>
-		<flyway.password>1234</flyway.password>
+		<flyway.password>lucivald</flyway.password>
 		<flyway.schemas>mergulhospring</flyway.schemas>
 	</properties>
 	<dependencies>

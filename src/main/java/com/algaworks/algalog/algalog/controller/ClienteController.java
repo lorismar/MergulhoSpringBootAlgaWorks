@@ -2,11 +2,10 @@ package com.algaworks.algalog.algalog.controller;
 
 import com.algaworks.algalog.algalog.model.Cliente;
 import com.algaworks.algalog.algalog.repository.ClienteRepository;
-import com.algaworks.algalog.algalog.services.ClienteService;
+import com.algaworks.algalog.algalog.services.CatalogoClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,7 +17,7 @@ import java.util.*;
 public class ClienteController {
 
     private ClienteRepository clienteRepository;
-    private ClienteService clienteService;
+    private CatalogoClienteService catalogoClienteService;
 
     @GetMapping("/clientes")
     public ResponseEntity<List<Cliente>> listar(){
@@ -56,15 +55,13 @@ public class ClienteController {
 
     @GetMapping("/listar_cliente_lambada/{id}")
     public ResponseEntity<String> listar_cliente_lambada(@PathVariable Long id){
-
         return clienteRepository.findById(id).map( cliente -> ResponseEntity.ok(cliente.getNome())).orElse(null);
     }
 
     @PostMapping("/clientes")
     @ResponseStatus(HttpStatus.CREATED)
     public  Cliente adicionar(@Valid @RequestBody Cliente cliente){
-        return clienteService.salvar(cliente);
-
+        return catalogoClienteService.salvar(cliente);
     }
 
     @PutMapping("clientes/{clienteId}")
@@ -74,7 +71,7 @@ public class ClienteController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cliente);
         }
         cliente.setId(clienteId);
-        cliente = clienteService.salvar(cliente);
+        cliente = catalogoClienteService.salvar(cliente);
 
         return ResponseEntity.status(HttpStatus.OK).body(cliente);
     }
@@ -85,7 +82,7 @@ public class ClienteController {
         if(!clienteRepository.existsById(id)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        clienteService.excluir(id);
+        catalogoClienteService.excluir(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

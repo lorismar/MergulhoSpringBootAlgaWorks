@@ -1,5 +1,6 @@
 package com.algaworks.algalog.algalog.execptionHandler;
 
+import com.algaworks.algalog.algalog.exception.NegocioExecption;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceResolvable;
@@ -11,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -46,4 +48,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         return this.handleExceptionInternal(ex, problema, headers, status, request);
     }
+
+    @ExceptionHandler(NegocioExecption.class)
+    public ResponseEntity<Object>  handleNegocio(NegocioExecption ex, WebRequest request){
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        Problema problema = new Problema();
+        problema.setStatus(status.value());
+        problema.setDataHora(LocalDateTime.now());
+        problema.setTitulo("Já existe um email com este e-mail.");
+
+
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+    }
+
+
+
 }
